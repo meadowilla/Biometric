@@ -8,7 +8,7 @@ import IrisMatching as IM
 import PerformanceEvaluation as PE
 import datetime
 
-rootpath = "./CASIA Iris Image Database (version 1.0)/"
+rootpath = "C:/Users/Me/Downloads/Biometric/IrisRecognition-master/CASIA Iris Image Database (version 1.0)/"
 
 train_features = np.zeros((324,1536))
 train_classes = np.zeros(324, dtype = np.uint8)
@@ -51,13 +51,13 @@ PE.performance_evaluation(train_features, train_classes, test_features, test_cla
 # this part is for bootsrap
 starttime = datetime.datetime.now() 
 thresholds_3=np.arange(0.6,0.9,0.02)
-times = 100 #running 100 times takes about 1 to 2 hours
+times = 10 #running 100 times takes about 1 to 2 hours
 total_fmrs, total_fnmrs, crr_mean, crr_u, crr_l = IM.IrisMatchingBootstrap(train_features, train_classes, test_features, test_classes,times,thresholds_3)
 fmrs_mean,fmrs_l,fmrs_u,fnmrs_mean,fnmrs_l,fnmrs_u = IM.calcROCBootstrap(total_fmrs, total_fnmrs)
 
 endtime = datetime.datetime.now()
 
-print('Bootsrap takes'+str((endtime-starttime).seconds) + 'seconds')
+print('Bootsrap takes '+str((endtime-starttime).seconds) + ' seconds')
 
 fmrs_mean *= 100  #use for percent(%)
 fmrs_l *= 100

@@ -1,6 +1,6 @@
 import numpy as np
 import cv2
-import skimage
+from skimage.transform import hough_circle, hough_circle_peaks
 
 def IrisLocalization(eye):
     blured = cv2.bilateralFilter(eye,9,100,100)
