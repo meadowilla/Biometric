@@ -1,3 +1,4 @@
+# Import necessary libraries and modules
 import numpy as np
 import cv2
 from IrisLocalization import IrisLocalization
@@ -8,25 +9,43 @@ import IrisMatching as IM
 import PerformanceEvaluation as PE
 import datetime
 
+# Define the root path to the dataset
 rootpath = "C:/Users/Me/Downloads/Biometric/IrisRecognition-master/CASIA Iris Image Database (version 1.0)/"
 
-train_features = np.zeros((324,1536))
-train_classes = np.zeros(324, dtype = np.uint8)
-test_features = np.zeros((432,1536))
+# Initialize arrays to hold training and testing features and classes
+train_features = np.zeros((324,1536)) # there are 324 training images, each represented by a 1536-dimensional feature vector
+train_classes = np.zeros(324, dtype = np.uint8) 
+test_features = np.zeros((432,1536)) # 108 subjects * 4 images
 test_classes = np.zeros(432, dtype = np.uint8)
 
+# Record the start time of the process
 starttime = datetime.datetime.now()
 
+# Loop through each subject in the dataset
 for i in range(1,109):
+    # Define paths for training and testing images for the current subject
     filespath = rootpath + str(i).zfill(3)
     trainpath = filespath + "/1/"
     testpath = filespath + "/2/"
+
+    # Loop through each training image for the current subject
     for j in range(1,4):
+        # Construct the file path for the current training image
         irispath = trainpath + str(i).zfill(3) + "_1_" + str(j) + ".bmp"
+
+        # Read the image in grayscale mode
         img = cv2.imread(irispath, 0)
+
+        # Perform iris localization to find the iris and pupil regions
         iris, pupil = IrisLocalization(img)
+
+        # Normalize the iris region
         normalized = IrisNormalization(img, pupil, iris)
+
+        # Enhance the normalized iris image
         ROI = ImageEnhancement(normalized)
+
+        # Extract features from the enhanced image (not shown in the provided code)
         train_features[(i-1)*3+j-1, :] = FeatureExtraction(ROI)
         train_classes[(i-1)*3+j-1] = i
     for k in range(1,5):

@@ -10,10 +10,11 @@ def IrisNormalization(image,inner_circle,outer_circle ):
     outer_y=outer_circle[0]
     outer_x=outer_circle[1]
     angle=2.0*math.pi/col
-    inner_boundary_x = np.zeros(shape=(1,col))
-    inner_boundary_y = np.zeros(shape=(1,col))
-    outer_boundary_x = np.zeros(shape=(1,col))
-    outer_boundary_y = np.zeros(shape=(1,col))
+    # 1 row 512 col
+    inner_boundary_x = np.zeros(shape=(1,col)) # x coordinate of pupil boundary for each angle
+    inner_boundary_y = np.zeros(shape=(1,col)) # y coordinate of pupil boundary for each angle
+    outer_boundary_x = np.zeros(shape=(1,col)) # x coordinate of iris boundary for each angle
+    outer_boundary_y = np.zeros(shape=(1,col)) # y coordinate of iris boundary for each angle
     for j in range(col):
 
 
@@ -25,10 +26,11 @@ def IrisNormalization(image,inner_circle,outer_circle ):
         
     for j in range (512):
         for i in range (64):
-             normalized_iris[i][j]=localized_img[min(int(int(inner_boundary_y[0][j])
-                                   +(int(outer_boundary_y[0][j])-int(inner_boundary_y[0][j]))*(i/64.0)),localized_img.shape[0]-1)][min(int(int(inner_boundary_x[0][j])
-                                   +(int(outer_boundary_x[0][j])-int(inner_boundary_x[0][j]))
-                                   *(i/64.0)),localized_img.shape[1]-1)]
+            normalized_iris[i][j]=localized_img[
+                min(int(int(inner_boundary_y[0][j])+(int(outer_boundary_y[0][j])-int(inner_boundary_y[0][j]))*(i/64.0)),localized_img.shape[0]-1)
+            ][
+                min(int(int(inner_boundary_x[0][j])+(int(outer_boundary_x[0][j])-int(inner_boundary_x[0][j]))*(i/64.0)),localized_img.shape[1]-1)
+            ]
 
     res_image=255-normalized_iris
     return res_image 
