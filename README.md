@@ -67,11 +67,6 @@
 * Region of interest (ROI) consists of the first 48 rows and all columns of the normalized image.
 
 ## Feature Extraction
-* Using ndimage of scipy
-* Gabor Filter - very complex
-1. Generate 2 Gabor filters
-2. Apply the filters to the region of interest (ROI) using convolution
-3. Calculate the mean values and Average Absolute Deviation (AAD) of the 8x8 blocks in the filtered images.
 
 
 
