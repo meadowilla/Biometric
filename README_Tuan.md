@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/4ce974e1-c126-4e29-9fa6-bc24c94820a4)# Biometric
+# Biometric
 
 ## Libraries
 * numpy
