@@ -6,7 +6,6 @@ def ImageEnhancement(normalized_iris):
     col=512
     normalized_iris = normalized_iris.astype(np.uint8)
     
-    
     enhanced_image=normalized_iris
      
     enhanced_image = equalize(enhanced_image, disk(32))

@@ -29,7 +29,7 @@ def IrisLocalization(eye): # input is the eye image in grayscale
     
     hough_radii = np.arange(rp+45, 150, 2) # possible iris radii
     hough_res = hough_circle(eye_edges, hough_radii) # hough transform to detect circles with different radii
-    accums, xi, yi, ri = hough_circle_peaks(hough_res, hough_radii, total_num_peaks=1) # find the mostt prominent circle (peak) to be the iris circle
+    accums, xi, yi, ri = hough_circle_peaks(hough_res, hough_radii, total_num_peaks=1) # find the most prominent circle (peak) to be the iris circle
     iris = [] # iris circle
     iris.extend(xi)
     iris.extend(yi)

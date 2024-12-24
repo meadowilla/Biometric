@@ -67,7 +67,8 @@
 * Region of interest (ROI) consists of the first 48 rows and all columns of the normalized image.
 
 ## Feature Extraction
-
+* Generating a Gabor kernel. what is Gabor kernel????
+* Convolving the normalized image with Gabor
 
 
 
