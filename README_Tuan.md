@@ -40,10 +40,43 @@
 Nó sẽ chọn hàng bé nhất (Xp), Cột bé nhất (Yp). Mik sẽ chọn điểm (Xp, Yp) vì nó có thể là tâm của pupil, vì nó sẽ tối hơn hẳn những điểm khác.
 
 3. Refinement Step
+
+```python
+x = blured[max(Yp - 60,0):min(Yp + 60,280), max(Xp - 60,0):min(Xp + 60,320)].sum(axis=0).argmin()
+y = blured[max(Yp - 60,0):min(Yp + 60,280), max(Xp - 60,0):min(Xp + 60,320)].sum(axis=1).argmin()
+```
+
+Đây là slicing technique trong python, format sẽ là:
+
+```python
+array[start_row:end_row, start_col:end_col]
+```
+
+Nó sẽ lấy 1 hình chữ nhật có góc trái trên là (start_row, start_col) và góc phải dưới là (end_row, end_col) <br>
+Trong ví dụ trên thì nó sẽ lấy 1 hình chữ nhật kích cỡ 120 x 120. Với x, thì nó sẽ tính tổng tất cả các hàng và tìm ra kết quả bé nhất <br>
+Với y thì ngược lại.
+
 * The sub-region is a square centered at (Xp, Yp) with a fixed size (120 x 120 pixels).
 * Sum pixel values in the sub-region and find the minimum sum indices to update the pupil center coordinates
 
-4. Gaussian Blur for reducing noise and smooth the image. 
+--> Purpose: Làm cho pupil center chính xác hơn.
+
+4. Gaussian Blur for reducing noise and smooth the image.
+
+```python
+if Xp >= 100 and Yp >= 80: # check if the pupil center is not too close to the edge
+        blur = cv2.GaussianBlur(eye[Yp - 60:Yp + 60, Xp - 60:Xp + 60],(5,5),0) #
+        pupil_circles = cv2.HoughCircles(blur,cv2.HOUGH_GRADIENT, dp=1.2,minDist=200,param1=200,param2=12,minRadius=15,maxRadius=80) 
+        xp, yp, rp = np.round(pupil_circles[0][0]).astype("int")
+        xp = Xp - 60 + xp
+        yp = Yp - 60 + yp
+    else:
+        pupil_circles = cv2.HoughCircles(blured, cv2.HOUGH_GRADIENT, 4, 280, minRadius = 25, maxRadius=55, param2=51)
+        xp, yp, rp = np.round(pupil_circles[0][0]).astype("int")
+```
+
+xp,yp là tâm của đường tròn còn rp là bán kính. pupil_circles chứa 1 danh sách các đường tròn.
+
 * (5, 5) is the size of Gaussian kernel.
 * 0 is the standard deviation of the X direction.
 
