@@ -155,7 +155,7 @@ for threshold in thresholds:
         print(f"Test {i}: ", count /12 *100, "%")
         med = med + count
 
-    print(f"overall of threshold {threshold}: ", med /108 /12 *100, "%")
+    print(f"overall of threshold {threshold}: ", med /3 /12 *100, "%")  # 3 first users
     # if (med /25 /12 *100 > med_max):
     #     med_max = med /25 /12 *100
     #     threshold_max = threshold
