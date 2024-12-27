@@ -30,9 +30,9 @@ test_classes = np.zeros(432, dtype = np.uint8)
 # Record the start time of the process
 starttime = datetime.datetime.now()
 
-# Loop through each subject in the dataset
-for i in range(1,109):
-    # Define paths for training and testing images for the current subject
+# Loop through 3 first users in dataset
+for i in range(1,4):
+    # Define paths
     filespath = rootpath + str(i).zfill(3)
     normalizedFilesPath = normalizedpath + str(i).zfill(3)
     iriscodeFilesPath = iriscodepath + str(i).zfill(3)
@@ -56,8 +56,8 @@ for i in range(1,109):
     if not os.path.exists(iriscodeTestPath):
         os.makedirs(iriscodeTestPath)
 
-    '''
-    # Loop through each training image for the current subject
+    
+    # Loop through all training and testing images of the current user
     for j in range(1,4):
         # Construct the file path for the current training image
         irispath = trainpath + str(i).zfill(3) + "_1_" + str(j) + ".bmp"
@@ -89,6 +89,7 @@ for i in range(1,109):
         np.savetxt(os.path.join(iriscodeTestPath, str(i).zfill(3) + "_2_" + str(k) + ".txt"), test_iris_code, fmt='%d')
     
 
+    ''' Do the same things as above but without saving the images, just save into temperary arrays
     for j in range(1,4):
         # Construct the file path for the current training image
         irispath = trainpath + str(i).zfill(3) + "_1_" + str(j) + ".bmp"
@@ -112,15 +113,19 @@ for i in range(1,109):
         test_classes[(i-1)*4+k-1] = i
     '''
 
+    ''' This this the code to compare a template of registerd user with a template of test user
+    We can modify this code to compare all templates of registerd users (001, 002, 003) with a random template of test user (008)'''
     # train_tmp = np.loadtxt(iriscodeTestPath + str(i).zfill(3) + "_2_1.txt", dtype=int)
     # test_tmp = np.loadtxt(iriscodeTestPath + str(i).zfill(3) + "_2_2.txt", dtype=int)
     # min_distance, best_shift = find_min_hamming_distance(train_tmp.tolist(), test_tmp.tolist())
     # print(f"Test {i}: min_distance = {min_distance}, best_shift = {best_shift}")
 
+    """ After achieving the min distance, we can compare it with a threshold (0.373) to determine if the test image is the same as the registerd image"""
+
 endtime_1 = datetime.datetime.now()
 print('image processing and feature extraction takes ' + str((endtime_1-starttime).seconds) + ' seconds')
 
-thresholds = [0.35, 0.36, 0.37, 0.38]
+thresholds = [0.373]
 med_max = 0
 threshold_max = 0
 
@@ -159,6 +164,8 @@ for threshold in thresholds:
 endtime_2 = datetime.datetime.now()
 print('feature matching and performance evaluation takes '+ str((endtime_2-starttime).seconds) + ' seconds')
 
+
+''' The below part is not used in the project'''
 # PE.table_CRR(train_features, train_classes, test_features, test_classes)
 # PE.performance_evaluation(train_features, train_classes, test_features, test_classes)
 #thresholds_2=[0.74,0.76,0.78]

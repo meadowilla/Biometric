@@ -25,20 +25,20 @@ def gabor_filter_bank(scales, orientations, ksize=31, sigma=2.24):
     kernel_imag = filters[0][1]
 
     # Visualize the first Gabor filter (real and imaginary parts)
-    # import matplotlib.pyplot as plt
-    # plt.figure(figsize=(10, 5))
+    import matplotlib.pyplot as plt
+    plt.figure(figsize=(10, 5))
 
-    # plt.subplot(1, 2, 1)
-    # plt.imshow(kernel_real, cmap='gray')
-    # plt.title('Real Part of First Gabor Filter')
-    # plt.colorbar()
+    plt.subplot(1, 2, 1)
+    plt.imshow(kernel_real, cmap='gray')
+    plt.title('Real Part of First Gabor Filter')
+    plt.colorbar()
 
-    # plt.subplot(1, 2, 2)
-    # plt.imshow(kernel_imag, cmap='gray')
-    # plt.title('Imaginary Part of First Gabor Filter')
-    # plt.colorbar()
+    plt.subplot(1, 2, 2)
+    plt.imshow(kernel_imag, cmap='gray')
+    plt.title('Imaginary Part of First Gabor Filter')
+    plt.colorbar()
 
-    # plt.show()
+    plt.show()
     return filters
 
 def apply_gabor_filters(image, filters):
@@ -101,7 +101,6 @@ def FeatureExtraction(image, block_size, scales=1, orientations=4):
 
     # Step 2: Generate Gabor filter bank
     filters = gabor_filter_bank(scales=scales, orientations=orientations)
-    # print("First filter: ", filters[0]) 
 
     # Step 3: Apply Gabor filters to the block means
     responses = apply_gabor_filters(block_means, filters)

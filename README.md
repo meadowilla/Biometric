@@ -67,20 +67,7 @@
 * Region of interest (ROI) consists of the first 48 rows and all columns of the normalized image.
 
 ## Feature Extraction
-* Generating a Gabor kernel. what is Gabor kernel????
-* Convolving the normalized image with Gabor
-
-
-
+* In report, pls
 
 ## Performance Evaluation
-* table_CRR
-* performance_evaluation
-
-## Bootstrap
-* A statistical method used to estimate the distribution of a statistic (mean or standard deviation) 
-* By resampling with replacement from the original data
-### Steps
-* Resampling the data multiple times (specified by times).
-* Calculating the False Match Rates (FMRs) and False Non-Match Rates (FNMRs) for each resampled dataset.
-* Aggregating the results to compute mean and confidence intervals for the performance metrics.
+* In report, pls
