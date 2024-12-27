@@ -132,7 +132,7 @@ threshold_max = 0
 for threshold in thresholds:
     print("threshold: ", threshold)
     med = 0
-    for i in range(1, 109):
+    for i in range(1, 4): # 3 first users
         filespath = rootpath + str(i).zfill(3)
         normalizedFilesPath = normalizedpath + str(i).zfill(3)
         iriscodeFilesPath = iriscodepath + str(i).zfill(3)
