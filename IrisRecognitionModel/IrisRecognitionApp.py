@@ -1,77 +1,67 @@
-# Import necessary libraries and modules
-import numpy as np
-import cv2
 import os
+import cv2
+import numpy as np
 from IrisEnhancement import IrisEnhancement
 from IrisLocalization import IrisLocalization
 from IrisNormalization import IrisNormalization
 from FeatureExtraction import FeatureExtraction
 from HammingDistance import find_min_hamming_distance
+import tkinter as tk
+from tkinter import filedialog, messagebox
 
-n = 3 # number of users to loop through
+# Define the threshold for iris verification
+threshold = 0.34
 
-rootpath = "D:/at school/2024.1/Biometric Authentication System/Project/Biometric/IrisRecognitionModel/CASIA Iris Image Database (version 1.0)/"
+# Define the function to calculate the iris code of an image
+def calculate_iriscode(imgpath):
+    eye = cv2.imread(imgpath, cv2.IMREAD_GRAYSCALE)
+    iris, pupil = IrisLocalization(eye)
+    normalized = IrisNormalization(eye, pupil, iris)
+    enhanced = IrisEnhancement(normalized)
+    feature = FeatureExtraction(enhanced, 16)
+    return feature
 
-for i in range(1,4): # loop through 3 first users in dataset
-    # Define paths
-    filespath = rootpath + str(i).zfill(3)
-    trainpath = filespath + "/1/"
+# Define the function to register the user
+def register_new_user():
+    imgpath = filedialog.askopenfilename(title="Select Image for Registration")
+    if imgpath:
+        registered_iris_code = calculate_iriscode(imgpath)
+        np.savetxt("registered_iris_code.txt", registered_iris_code, fmt='%d')
+        messagebox.showinfo("Registration", "User registered successfully!")
 
-    iriscodepath = "D:/at school/2024.1/Biometric Authentication System/Project/Biometric/IrisRecognitionModel/IrisCodesForApp/"
-    if not os.path.exists(iriscodepath):
-        os.makedirs(iriscodepath)
+# Define the function to verify the user
+def verify_user():
+    imgpath = filedialog.askopenfilename(title="Select Image for Verification")
+    if imgpath:
+        checkin_iris_code = calculate_iriscode(imgpath)
+        registered_iris_code = np.loadtxt("registered_iris_code.txt", dtype=int)
+        min_distance = find_min_hamming_distance(checkin_iris_code.tolist(), registered_iris_code.tolist())[0]
+        print(f"min_distance = {min_distance}")
+        if min_distance < threshold:
+            messagebox.showinfo("Verification", "User verified successfully!")
+        else:
+            messagebox.showinfo("Verification", "User not verified!")
 
-    iriscodeFilesPath = iriscodepath + str(i).zfill(3)
-    if not os.path.exists(iriscodeFilesPath):
-        os.makedirs(iriscodeFilesPath)
+# Create the main window
+root = tk.Tk()
+root.title("Iris Recognition App")
+root.geometry("500x300")
+root.configure(bg="#f0f0f0")
 
-    iriscodeTrainPath = iriscodeFilesPath + "/1/"
-    if not os.path.exists(iriscodeTrainPath):
-        os.makedirs(iriscodeTrainPath)
+# Create a frame for better layout
+frame = tk.Frame(root, bg="#f0f0f0")
+frame.pack(pady=30)
 
-    # Loop through all training images of the current user
-    for j in range(1,4):
-        # Construct the file path for the current training image
-        irispath = trainpath + str(i).zfill(3) + "_1_" + str(j) + ".bmp"
+# Create a label for the title
+title_label = tk.Label(frame, text="Iris Recognition App", font=("Helvetica", 20), bg="#f0f0f0", fg="#333333")
+title_label.pack(pady=20)
 
-        eye = cv2.imread(irispath, cv2.IMREAD_GRAYSCALE)
-        iris, pupil = IrisLocalization(eye)
-        normalized = IrisNormalization(eye, pupil, iris)
-        enhanced = IrisEnhancement(normalized)
+# Create buttons for registration and verification
+register_button = tk.Button(frame, text="Register User", command=register_new_user, width=25, height=2, bg="#4CAF50", fg="white", font=("Helvetica", 14))
+register_button.pack(pady=15)
 
-        # block_size = 16
-        train_iris_code = FeatureExtraction(enhanced, 16)
-        np.savetxt(os.path.join(iriscodeTrainPath, str(i).zfill(3) + "_1_" + str(j) + ".txt"), train_iris_code, fmt='%d')
-        
+verify_button = tk.Button(frame, text="Verify User", command=verify_user, width=25, height=2, bg="#008CBA", fg="white", font=("Helvetica", 14))
+verify_button.pack(pady=15)
 
-# Test the model with a new image (image 1 of user 8)
-testpath = rootpath + "008/2/"
-testirispath = testpath + "008_2_1.bmp"
-testeye = cv2.imread(testirispath, cv2.IMREAD_GRAYSCALE)
-testiris, testpupil = IrisLocalization(testeye)
-testnormalized = IrisNormalization(testeye, testpupil, testiris)
-testenhanced = IrisEnhancement(testnormalized)
-test_feature = FeatureExtraction(testenhanced, 16)
-test_class = 8
-
-# Calculate the Hamming distance between the test image and the first training image of user 1
-train_feature = np.loadtxt("D:/at school/2024.1/Biometric Authentication System/Project/Biometric/IrisRecognitionModel/IrisCodesForApp/001/1/001_1_1.txt", dtype=int)
-min_distance, best_shift = find_min_hamming_distance(train_feature.tolist(), test_feature.tolist())
-print(min_distance, best_shift)
-
-# Calculate the Hamming distance between the test image and all training images
-found = False
-for i in range(1, 4):
-    iriscodeTrainPath = iriscodepath + str(i).zfill(3) + "/1/"
-    for j in range(1, 4):
-        train_feature = np.loadtxt(iriscodeTrainPath + str(i).zfill(3) + "_1_" + str(j) + ".txt", dtype=int)
-        min_distance, best_shift = find_min_hamming_distance(train_feature.tolist(), test_feature.tolist())
-        if (min_distance <= 0.32):
-            found = True
-            print("The test image is matched with the training image of user" + str(i // 3 + 1))
-            print("The prediction is: ", (i // 3 + 1) == test_class)
-
-if not found:
-    print("The test image is not matched with any training images")
-    print("The prediction is: ", test_class in [1, 2, 3])
-
+# Run the main loop
+root.mainloop()
